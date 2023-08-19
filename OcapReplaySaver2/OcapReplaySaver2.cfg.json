@@ -2,6 +2,7 @@
     "httpRequestTimeout": 120,
     "logAndTmpPrefix": "ocap-",
     "logsDir": "./OCAPLOG",
+    "tempDir": "./OCAPTMP",
     "newServerGameType": "TvT",
     "newUrl": "http://127.0.0.1/api/v1/operations/add",
     "newUrlRequestSecret": "pwd1234",

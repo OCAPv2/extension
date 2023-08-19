@@ -1,7 +1,7 @@
 ﻿// by Zealot
 // MIT licence https://opensource.org/licenses/MIT
 
-#define CURRENT_VERSION "4.4.2.3"
+#define CURRENT_VERSION "4.4.3.0"
 
 #include <cstring>
 #include <cstdio>
@@ -27,6 +27,7 @@
 #include <cstdint>
 #include <filesystem>
 #include <optional>
+#include <condition_variable>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -144,6 +145,7 @@ namespace {
         int httpRequestTimeout{ 120 };
         int traceLog{ 0 };
         std::string logsDir{ "./OCAPLOG" };
+        std::string tempDir{ "./OCAPTMP" };
         std::string logAndTmpPrefix{ "ocap-" };
         // TODO: new names and comments, logs dir, change types accordingly, chenage default values
     } config;
@@ -461,6 +463,20 @@ fs::path getAndCreateLogDirectory() {
     return res;
 }
 
+fs::path getAndCreateTempDirectory() {
+    fs::path res = config.tempDir;
+    //res += "/";
+    //res += "OCAPLOG";
+    res.make_preferred();
+    try {
+        fs::create_directories(res);
+    }
+    catch (const std::exception& ex) {
+        LOG(WARNING) << "Error create directories: " << ex.what();
+    }
+    return res;
+}
+
 std::string uniqueFileName() {
     std::srand(std::time(nullptr));
     std::string res(5, '\0');
@@ -473,7 +489,7 @@ std::string uniqueFileName() {
 }
 
 pair<std::string, std::optional<std::string> > saveCurrentReplayToTempFile() {
-    fs::path temp_fname = fs::temp_directory_path();
+    fs::path temp_fname = getAndCreateTempDirectory();
     temp_fname += "/";
 
     temp_fname += config.logAndTmpPrefix;

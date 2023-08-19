@@ -337,3 +337,7 @@ $RECYCLE.BIN/
 *.lnk
 *.exe
 
+# Cmake files
+CMakeCache.txt
+CmakeLists.txt
+CMakeFiles
